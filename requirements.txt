@@ -1,0 +1,3 @@
+python-social-auth
+crispy_forms
+-e git+git@github.com:javierwilson/django-addressbook.git
