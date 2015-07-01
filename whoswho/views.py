@@ -1,13 +1,7 @@
 from django.conf import settings
 from django.shortcuts import redirect
 
-from social.backends.oauth import BaseOAuth1, BaseOAuth2
-from social.backends.google import GooglePlusAuth
-from social.backends.utils import load_backends
-from social.apps.django_app.utils import psa
-
 from decorators import render_to
-
 
 def context(**extra):
     return dict({
