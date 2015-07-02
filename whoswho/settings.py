@@ -49,6 +49,8 @@ INSTALLED_APPS = (
 
     'crispy_forms',
     'django_extensions',
+    'taggit',
+    'taggit_labels',
 
     # my own
     'addressbook',
