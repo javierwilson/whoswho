@@ -57,7 +57,18 @@ docs/_build/
 target/
 
 # added by javier
+# shell stuff
+.bash*
+.z*
+.lesshst
+.oh-my-zsh/
+.ssh/
+.vim*
+.virtualenvs/
+.gitconfig
+#other stuff
 *.sqlite3
+*.sql
 /static/*
 *.swp
 local_settings.py

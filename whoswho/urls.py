@@ -15,10 +15,19 @@ Including another URLconf
 """
 from django.conf.urls import include, url
 from django.contrib import admin
+from .views import *
 
 urlpatterns = [
+    url(r'^grappelli/', include('grappelli.urls')), # grappelli URLS
     url(r'^admin/', include(admin.site.urls)),
-    url(r'^', include('addressbook.urls')),
     url(r'^accounts/', include('allauth.urls')),
-    url(r'^login/$', 'whoswho.views.home'),
+    url(r'^login/$', home),
+    url(r'^$', index, name='index'),
+    url(r'^group/add$', add_group, name='add_group'),
+    url(r'^contact/add$', add_contact, name='add_contact'),
+    url(r'^contact/(?P<pk>\d+)/edit$', edit_contact, name='edit_contact'),
+    url(r'^contact/(?P<pk>\d+)/view$', single_contact, name='single_contact'),
+    url(r'^group/(?P<name>[\w ]+)/view$', single_group, name='single_group'),
+    url(r'^tag/(?P<name>[\w ]+)/view$', single_tag, name='single_tag'),
+    url(r'^contact/download$', download_vcard, name='download_vcard'),
 ]
