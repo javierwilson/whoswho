@@ -5,4 +5,5 @@ django-taggit-templatetags
 django-taggit-labels
 django-taggit-autosuggest
 django-grappelli
+easy-thumbnails
 django
