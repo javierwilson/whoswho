@@ -24,8 +24,8 @@ class AddressInline(admin.StackedInline):
     model = Address
     extra = 0
 
-class AttendanceInline(admin.StackedInline):
-    model = Attendance
+class EventInline(admin.StackedInline):
+    model = Contact.events.through
     extra = 0
 
 
@@ -42,10 +42,11 @@ class ContactAdmin(admin.ModelAdmin):
         PhoneInline,
         SocialInline,
         WebsiteInline,
-        AttendanceInline,
+        EventInline,
     ]
 
     list_filter = [
+            #'event_set.name',
             'organization',
             'country',
             #('country', admin.RelatedOnlyFieldListFilter),

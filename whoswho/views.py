@@ -44,7 +44,7 @@ def add_group(request):
             # request.user.message_set.create(message = 'Successfully saved group.')
             return HttpResponseRedirect(reverse('addressbook_index'))
     return render(
-        request, 'addressbook/add_group.html',
+        request, 'add_group.html',
         RequestContext(request, {'form': form})
     )
 
@@ -82,7 +82,7 @@ def add_contact(request):
         phone_formset = PhoneFormSet(prefix="phone")
         address_formset = AddressFormSet(prefix="address")
     return render(
-        request, 'addressbook/add_contact.html',
+        request, 'add_contact.html',
         RequestContext(request, {
             'phone_formset': phone_formset,
             'contact_form': contact_form,
@@ -119,7 +119,7 @@ def edit_contact(request, pk):
         address_formset = AddressEditFormSet(instance=contact, prefix="address")
         email_formset = EmailEditFormSet(instance=contact, prefix="email")
     return render(
-        request, 'addressbook/edit_contact.html',
+        request, 'edit_contact.html',
         RequestContext(request, {
             'email_formset': email_formset,
             'phone_formset': phone_formset,
@@ -133,6 +133,7 @@ def edit_contact(request, pk):
 def index(request):
     groups = ContactGroup.objects.all()
     tags = Tag.objects.all()
+    events = Event.objects.all()
     contacts = Contact.objects.all()
     # FIXME: tup?
     tup = [
@@ -145,6 +146,7 @@ def index(request):
             'contacts': contacts,
             'groups': groups,
             'tags': tags,
+            'events': events,
         }))
 
 
@@ -159,6 +161,7 @@ def get_hash(str):
 def single_contact(request, pk):
     groups = ContactGroup.objects.all()
     tags = Tag.objects.all()
+    events = Event.objects.all()
     contact = Contact.objects.get(pk=pk)
     #if contact.group.user != request.user:
     #    raise Http404
@@ -176,7 +179,7 @@ def single_contact(request, pk):
         #    address = addresses[0]
         phones = PhoneNumber.objects.filter(contact=contact)
         return render(
-            request, 'addressbook/single_contact.html',
+            request, 'single_contact.html',
             RequestContext(request, {
                 'contact': contact,
                 'emails': emails,
@@ -187,6 +190,7 @@ def single_contact(request, pk):
                 #'vcard_str': str(VCard(contact)),
                 'groups': groups,
                 'tags': tags,
+                'events': events,
             }))
 
     elif request.method == "POST":
@@ -200,18 +204,41 @@ def single_contact(request, pk):
 def single_group(request, name):
     groups = ContactGroup.objects.filter(name=name)
     tags = Tag.objects.all()
+    events = Event.objects.all()
     contacts = Contact.objects.filter(groups__name=name)
     tup = [
         (group.name, Contact.objects.filter(groups=group).order_by('first_name', 'last_name')) for group in groups
     ]
     return render(
-        request, 'addressbook/index.html',
+        request, 'index.html',
         RequestContext(request, {
             'tup': tup,
             'contacts': contacts,
             'groups': ContactGroup.objects.all(),
             'tags': tags,
+            'events': events,
         }))
+
+
+@login_required
+def single_event(request, name):
+    groups = ContactGroup.objects.all()
+    events = Event.objects.filter(name=name)
+    tags = Tag.objects.all()
+    contacts = Contact.objects.filter(events__name=name)
+    tup = [
+        (event.name, Contact.objects.filter(events=event).order_by('first_name', 'last_name')) for event in events
+    ]
+    return render(
+        request, 'index.html',
+        RequestContext(request, {
+            'tup': tup,
+            'contacts': contacts,
+            'groups': ContactGroup.objects.all(),
+            'tags': Tag.objects.all(),
+            'events': Event.objects.all(),
+        }))
+
 
 
 @login_required
@@ -219,17 +246,19 @@ def single_tag(request, name):
     #FIXME: no groups! tags!
     groups = ContactGroup.objects.all()
     tags = Tag.objects.filter(name=name)
+    events = Event.objects.all()
     contacts = Contact.objects.filter(tags__name=name)
     tup = [
         (tag.name, Contact.objects.filter(tags=tag).order_by('first_name', 'last_name')) for tag in tags
     ]
     return render(
-        request, 'addressbook/index.html',
+        request, 'index.html',
         RequestContext(request, {
             'tup': tup,
             'contacts': contacts,
             'groups': ContactGroup.objects.all(),
             'tags': Tag.objects.all(),
+            'events': Event.objects.all(),
         }))
 
 

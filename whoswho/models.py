@@ -59,7 +59,7 @@ social_net_prefixes = dict(
 
 
 class Profession(models.Model):
-    name = models.CharField(max_length=50, verbose_name=_('Name'))
+    name = models.CharField(max_length=50, unique=True, verbose_name=_('Name'))
 
     class Meta:
         ordering = ['name']
@@ -71,7 +71,8 @@ class Profession(models.Model):
 
 
 class Organization(models.Model):
-    name = models.CharField(max_length=50, verbose_name=_('Name'))
+    name = models.CharField(max_length=50, unique=True, verbose_name=_('Name'))
+    country = CountryField(null=True, blank=True)
 
     class Meta:
         ordering = ['name']
@@ -79,7 +80,7 @@ class Organization(models.Model):
         verbose_name_plural = _("Organizations")
 
     def __unicode__(self):
-        return self.name
+        return "%s %s" % (self.name, self.country)
 
 
 class ContactGroup(models.Model):
@@ -93,7 +94,7 @@ class ContactGroup(models.Model):
 
 
 class Contact(models.Model):
-    groups = models.ManyToManyField(ContactGroup)
+    groups = models.ManyToManyField(ContactGroup, blank=True)
     last_name = models.CharField(max_length=40, blank=False)
     first_name = models.CharField(max_length=40, blank=False)
     middle_name = models.CharField(max_length=40, blank=True)
@@ -106,8 +107,9 @@ class Contact(models.Model):
     profile_image = ThumbnailerImageField(upload_to="profile_images/", blank=True, null=True)
     qr_image = models.ImageField(upload_to="qr_images/", blank=True, null=True)
     twitter_handle = models.CharField(max_length=50, blank=True, null=True)
-    worked_with = models.ManyToManyField('self')
+    worked_with = models.ManyToManyField('self', blank=True)
     tags = TaggableManager(blank=True)
+    events = models.ManyToManyField('Event', through='Attendance')
 
     class Meta:
         ordering = ['first_name', 'last_name']
@@ -122,7 +124,7 @@ class Contact(models.Model):
 
 
 class Event(models.Model):
-    name = models.CharField(max_length=100, verbose_name=_('Name'))
+    name = models.CharField(max_length=100, unique=True, verbose_name=_('Name'))
     title = models.CharField(max_length=400, null=True, blank=True, verbose_name=_('Title'))
     organizer = models.CharField(max_length=200, null=True, blank=True, verbose_name=_('Organizer'))
     #activities = models.ManyToManyField('Activity', blank=True, verbose_name=_('Activities'))
@@ -135,11 +137,11 @@ class Event(models.Model):
         ordering = ['name']
 
     def __unicode__(self):
-        return self.name
+        return "%s %s" % (self.name, self.start, )
 
 
 class AttendeeType(models.Model):
-    name = models.CharField(max_length=50, verbose_name=_('Name'))
+    name = models.CharField(max_length=50, unique=True, verbose_name=_('Name'))
 
     class Meta:
         ordering = ['name']
@@ -157,6 +159,9 @@ class Attendance(models.Model):
 
     class Meta:
         unique_together = ('contact', 'event')
+    def __unicode__(self):
+        return self.event.name
+
 
 class Address(models.Model):
     contact = models.ForeignKey(Contact)

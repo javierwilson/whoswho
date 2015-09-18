@@ -13,6 +13,12 @@
     {% endfor %}
 </ul>
 <ul class="nav nav-tabs">
+    <li>Events:</li>
+    {% for event in events %}
+        <li role="presentation"><a href="{% url "single_event" event.name %}">{{ event.name }}</a></li>
+    {% endfor %}
+</ul>
+<ul class="nav nav-tabs">
     <li>Tags:</li>
     {% for tag in tags %}
         <li role="presentation"><a href="{% url "single_tag" tag.name %}">{{ tag.name }}</a></li>

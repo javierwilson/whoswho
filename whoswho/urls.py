@@ -28,6 +28,7 @@ urlpatterns = [
     url(r'^contact/(?P<pk>\d+)/edit$', edit_contact, name='edit_contact'),
     url(r'^contact/(?P<pk>\d+)/view$', single_contact, name='single_contact'),
     url(r'^group/(?P<name>[\w ]+)/view$', single_group, name='single_group'),
+    url(r'^event/(?P<name>[\w ]+)/view$', single_event, name='single_event'),
     url(r'^tag/(?P<name>[\w ]+)/view$', single_tag, name='single_tag'),
     url(r'^contact/download$', download_vcard, name='download_vcard'),
 ]
