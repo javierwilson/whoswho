@@ -51,7 +51,9 @@ INSTALLED_APPS = (
     'crispy_forms',
     'django_extensions',
     'taggit',
-    'taggit_labels',
+    #'taggit_labels',
+    'taggit_autosuggest',
+    'import_export',
 
     # my own
     'whoswho',

@@ -9,6 +9,7 @@ from django.core.urlresolvers import reverse
 from django.http import Http404, HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.template.context import RequestContext
+from django.db.models import Count, Min, Sum, Avg
 
 from taggit.models import Tag
 
@@ -131,18 +132,33 @@ def edit_contact(request, pk):
 
 @login_required
 def index(request):
+
     groups = ContactGroup.objects.all()
     tags = Tag.objects.all()
     events = Event.objects.all()
     contacts = Contact.objects.all()
-    # FIXME: tup?
-    tup = [
-        (group.name, Contact.objects.filter(groups=group).order_by('first_name', 'last_name')) for group in groups
-    ]
+
+    if request.GET.get('tag'):
+        name = request.GET['tag']
+        contacts = contacts.filter(tags__name=name)
+    if request.GET.get('event'):
+        name = request.GET['event']
+        contacts = contacts.filter(events__event__name=name)
+        #contacts = Contact.objects.filter(attendance_set__contact__name=name)
+        #contacts = Contact.objects.filter(events__name=name)
+    if request.GET.get('group'):
+        name = request.GET['group']
+        contacts = contacts.filter(groups__name=name)
+
+    totals = contacts.values('sex').annotate(count=Count('sex')).order_by('sex')
+    SEX_DICT = dict(SEX_CHOICES)
+    for total in totals:
+        total['sex'] = dict(SEX_CHOICES).get(total['sex'], total['sex'])
+
     return render(
         request, 'index.html',
         RequestContext(request, {
-            'tup': tup,
+            'totals': totals,
             'contacts': contacts,
             'groups': groups,
             'tags': tags,
@@ -199,69 +215,6 @@ def single_contact(request, pk):
         return HttpResponseRedirect(reverse('addressbook_index'))
     else:
         raise Http404
-
-@login_required
-def single_group(request, name):
-    groups = ContactGroup.objects.filter(name=name)
-    tags = Tag.objects.all()
-    events = Event.objects.all()
-    contacts = Contact.objects.filter(groups__name=name)
-    tup = [
-        (group.name, Contact.objects.filter(groups=group).order_by('first_name', 'last_name')) for group in groups
-    ]
-    return render(
-        request, 'index.html',
-        RequestContext(request, {
-            'tup': tup,
-            'contacts': contacts,
-            'groups': ContactGroup.objects.all(),
-            'tags': tags,
-            'events': events,
-        }))
-
-
-@login_required
-def single_event(request, name):
-    groups = ContactGroup.objects.all()
-    events = Event.objects.filter(name=name)
-    tags = Tag.objects.all()
-    contacts = Contact.objects.filter(events__name=name)
-    tup = [
-        (event.name, Contact.objects.filter(events=event).order_by('first_name', 'last_name')) for event in events
-    ]
-    return render(
-        request, 'index.html',
-        RequestContext(request, {
-            'tup': tup,
-            'contacts': contacts,
-            'groups': ContactGroup.objects.all(),
-            'tags': Tag.objects.all(),
-            'events': Event.objects.all(),
-        }))
-
-
-
-@login_required
-def single_tag(request, name):
-    #FIXME: no groups! tags!
-    groups = ContactGroup.objects.all()
-    tags = Tag.objects.filter(name=name)
-    events = Event.objects.all()
-    contacts = Contact.objects.filter(tags__name=name)
-    tup = [
-        (tag.name, Contact.objects.filter(tags=tag).order_by('first_name', 'last_name')) for tag in tags
-    ]
-    return render(
-        request, 'index.html',
-        RequestContext(request, {
-            'tup': tup,
-            'contacts': contacts,
-            'groups': ContactGroup.objects.all(),
-            'tags': Tag.objects.all(),
-            'events': Event.objects.all(),
-        }))
-
-
 
 @login_required
 def download_vcard(request, vcard=VCard):

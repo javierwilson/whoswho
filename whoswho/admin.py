@@ -1,8 +1,16 @@
 from django.contrib import admin
 from django import forms
+
 from taggit_labels.widgets import LabelWidget
 from taggit.forms import TagField
+from import_export import resources
+from import_export.admin import ImportExportModelAdmin, ImportExportMixin
+
 from .models import *
+
+class ContactResource(resources.ModelResource):
+    class Meta:
+        model = Contact
 
 class SocialInline(admin.TabularInline):
     model = SocialNetwork
@@ -25,7 +33,8 @@ class AddressInline(admin.StackedInline):
     extra = 0
 
 class EventInline(admin.StackedInline):
-    model = Contact.events.through
+    #model = Contact.events.through
+    model = Attendance
     extra = 0
 
 
@@ -33,8 +42,11 @@ class EventInline(admin.StackedInline):
 #class ContactForm(forms.ModelForm):
 #    tags = TagField(required=False, widget=LabelWidget)
 
-class ContactAdmin(admin.ModelAdmin):
-    #form = ContactForm
+class ContactAdmin(ImportExportMixin, admin.ModelAdmin):
+
+    #formfield_overrides = {
+    #    TagField: {'widget': LabelWidget}
+    #}
 
     inlines = [
         AddressInline,
@@ -53,6 +65,7 @@ class ContactAdmin(admin.ModelAdmin):
             ]
     search_fields = ['first_name', 'last_name', 'organization']
     list_display = ('first_name', 'last_name', 'country', 'organization')
+
 
 class EventAdmin(admin.ModelAdmin):
 

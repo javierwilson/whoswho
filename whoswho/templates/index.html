@@ -15,7 +15,8 @@
 <table class="table table-striped">
 <tbody>
 {% for contact in contacts %}
-    <tr><td><a href="{% url "single_contact" contact.id %}">{{ contact.first_name }} {{ contact.last_name }}</a><br/>
+<tr><td>{{ forloop.counter }}. <a href="{% url "single_contact" contact.id %}">{{ contact.first_name }} {{ contact.last_name }}</a>
+        {{ contact.organization }} <br/>
     <small><em>
             {% if contact.phonenumber_set %}{{ contact.phonenumber_set.all.0.phone }}{% endif %}
             {% if contact.email_set %}{{ contact.email_set.all.0.email }}{% endif %}<br/>
@@ -23,21 +24,27 @@
     <small><em>
     {% for group in contact.groups.all %}
         {% if forloop.first %}Groups:{% endif %}
-        <a href="{% url "single_group" group.name %}">{{ group.name }}</a>,
+        <a href="{% url "index" %}?group=group.name">{{ group.name }}</a>,
     {% endfor %}
     {% for event in contact.events.all %}
         {% if forloop.first %}Events:{% endif %}
-        <a href="{% url "single_event" event.name %}">{{ event.name }}</a>,
+        <a href="{% url "index" %}?event=event.event.name">{{ event.event.name }}</a>,
     {% endfor %}
     {% for tag in contact.tags.all %}
         {% if forloop.first %}Tags:{% endif %}
-        <a href="{% url "single_tag" tag.name %}">{{ tag.name }}</a>,
+        <a href="{% url "index" %}?tag=tag.name">{{ tag.name }}</a>,
     {% endfor %}
     </em></small>
-    </td></tr>
+</td></tr>
 {% empty %}
 No contacts
 {% endfor %}
+<tr><td>
+        Total: {{ contacts.count }}<br/>
+        {% for total in totals %}
+            Total {{ total.sex }}: {{ total.count }}<br/>
+        {% endfor %}
+</td></tr>
 </tbody>
 </table>
 {% endblock %}

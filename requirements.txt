@@ -7,4 +7,6 @@ django-taggit-autosuggest
 django-grappelli
 easy-thumbnails
 django-countries
+django-import-export
+werkzeug
 django

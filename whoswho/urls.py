@@ -19,6 +19,7 @@ from .views import *
 
 urlpatterns = [
     url(r'^grappelli/', include('grappelli.urls')), # grappelli URLS
+    url(r'^taggit_autosuggest/', include('taggit_autosuggest.urls')),
     url(r'^admin/', include(admin.site.urls)),
     url(r'^accounts/', include('allauth.urls')),
     url(r'^login/$', home),
@@ -27,8 +28,5 @@ urlpatterns = [
     url(r'^contact/add$', add_contact, name='add_contact'),
     url(r'^contact/(?P<pk>\d+)/edit$', edit_contact, name='edit_contact'),
     url(r'^contact/(?P<pk>\d+)/view$', single_contact, name='single_contact'),
-    url(r'^group/(?P<name>[\w ]+)/view$', single_group, name='single_group'),
-    url(r'^event/(?P<name>[\w ]+)/view$', single_event, name='single_event'),
-    url(r'^tag/(?P<name>[\w ]+)/view$', single_tag, name='single_tag'),
     url(r'^contact/download$', download_vcard, name='download_vcard'),
 ]

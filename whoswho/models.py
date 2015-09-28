@@ -6,7 +6,8 @@ from django.utils.translation import ugettext as _
 
 from easy_thumbnails.fields import ThumbnailerImageField
 from django_countries.fields import CountryField
-from taggit.managers import TaggableManager
+from taggit_autosuggest.managers import TaggableManager
+#from taggit.managers import TaggableManager
 
 
 class AvatarStorage(LazyObject):
@@ -15,6 +16,12 @@ class AvatarStorage(LazyObject):
         self._wrapped = get_storage_class(AVATAR_FILE_STORAGE)()
 
 avatar_storage = AvatarStorage()
+
+SEX_CHOICES = (
+    ('M', _('Man')),
+    ('F', _('Woman')),
+    ('O', _('--')),
+)
 
 ADR_TYPES = (
     ('Home', 'Home'),
@@ -99,6 +106,7 @@ class Contact(models.Model):
     first_name = models.CharField(max_length=40, blank=False)
     middle_name = models.CharField(max_length=40, blank=True)
     title = models.CharField(max_length=40, blank=True)
+    sex = models.CharField(max_length=1, null=True, choices=SEX_CHOICES)
     organization = models.ForeignKey(Organization, null=True, blank=True)
     profession = models.ForeignKey(Profession, null=True, blank=True)
     url = models.URLField(blank=True)
@@ -109,7 +117,7 @@ class Contact(models.Model):
     twitter_handle = models.CharField(max_length=50, blank=True, null=True)
     worked_with = models.ManyToManyField('self', blank=True)
     tags = TaggableManager(blank=True)
-    events = models.ManyToManyField('Event', through='Attendance')
+    #events = models.ManyToManyField('Event', through='Attendance')
 
     class Meta:
         ordering = ['first_name', 'last_name']
@@ -153,7 +161,7 @@ class AttendeeType(models.Model):
 
 
 class Attendance(models.Model):
-    contact = models.ForeignKey(Contact)
+    contact = models.ForeignKey(Contact, related_name='events')
     event = models.ForeignKey(Event)
     type = models.ForeignKey(AttendeeType)
 
