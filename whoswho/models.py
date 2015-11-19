@@ -116,8 +116,7 @@ class Contact(models.Model):
     sex = models.CharField(max_length=1, null=True, choices=SEX_CHOICES)
     organization = models.ForeignKey(Organization, null=True, blank=True)
     profession = models.ForeignKey(Profession, null=True, blank=True)
-    url = models.URLField(blank=True)
-    country = CountryField(null=True, blank=True)
+    url = models.URLField(null=True, blank=True)
     blurb = models.TextField(null=True, blank=True)
     profile_image = ThumbnailerImageField(upload_to="profile_images/", blank=True, null=True)
     qr_image = models.ImageField(upload_to="qr_images/", blank=True, null=True)
@@ -127,18 +126,18 @@ class Contact(models.Model):
     #events = models.ManyToManyField('Event', through='Attendance')
 
     # new fields to make my life simpler
-    phone_work = models.CharField(max_length=20)
-    phone_personal = models.CharField(max_length=20)
-    email_work = models.EmailField()
-    email_personal = models.EmailField()
+    phone_work = models.CharField(max_length=20, null=True, blank=True)
+    phone_personal = models.CharField(max_length=20, null=True, blank=True)
+    email_work = models.EmailField(null=True, blank=True)
+    email_personal = models.EmailField(null=True, blank=True)
 
     # address
     street = models.CharField(max_length=50, null=True, blank=True)
-    city = models.CharField(max_length=40)
-    state = models.CharField(max_length=40)
-    municipality = models.CharField(max_length=40)
-    community = models.CharField(max_length=40)
-    country = CountryField()
+    city = models.CharField(max_length=40, null=True, blank=True)
+    state = models.CharField(max_length=40, null=True, blank=True)
+    municipality = models.CharField(max_length=40, null=True, blank=True)
+    community = models.CharField(max_length=40, null=True, blank=True)
+    country = CountryField(null=True, blank=True)
     zip = models.CharField(max_length=10, null=True, blank=True)
 
     # finca
@@ -147,11 +146,11 @@ class Contact(models.Model):
     area_desarrollo_mz = models.DecimalField(max_digits=6, decimal_places=2, null=True, blank=True)
 
     # extra
-    women_home = models.IntegerField(null=True)
-    men_home = models.IntgerField(null=True)
-    birth = models.DateField(null=True)
+    women_home = models.IntegerField(null=True, blank=True)
+    men_home = models.IntegerField(null=True, blank=True)
+    birth = models.DateField(null=True, blank=True)
     education = models.CharField(max_length=1, null=True, blank=True, choices=EDUCATION_CHOICES)
-    document = models.CharField(max_length=40)
+    document = models.CharField(max_length=40, null=True, blank=True)
 
     def __unicode__(self):
         return "%s %s: %s" % (self.contact.first_name, self.contact.last_name, self.email)
@@ -201,7 +200,7 @@ class AttendeeType(models.Model):
 class Attendance(models.Model):
     contact = models.ForeignKey(Contact, related_name='events')
     event = models.ForeignKey(Event)
-    date = models.DateField()
+    date = models.DateField(null=True)
     type = models.ForeignKey(AttendeeType)
 
     class Meta:
