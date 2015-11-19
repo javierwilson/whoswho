@@ -27,7 +27,7 @@
 	<p>
 	{% for group in contact.groups.all %}
 		{% if forloop.first %}Groups:{% endif %}
-		<a href="{% url "single_group" group.name %}">{{ group.name }}</a>,
+		<a href="{% url "index" %}?group={{ group.name }}">{{ group.name }}</a>,
 	{% endfor %}
 	</p>
 	<p>
