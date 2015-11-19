@@ -179,8 +179,14 @@ def single_contact(request, pk):
     tags = Tag.objects.all()
     events = Event.objects.all()
     contact = Contact.objects.get(pk=pk)
-    #if contact.group.user != request.user:
-    #    raise Http404
+
+    contact_card = {
+        'full_name': "%s: %s" % (contact.id, contact.full_name()),
+        'phone_number': contact.phone,
+        'email': contact.email,
+        'url': reverse('app:detail', kwargs={'username': contact.username}),
+        'company': contact.organization,
+    }
 
     if request.method == "GET":
         emails = Email.objects.filter(contact=contact)
@@ -202,8 +208,7 @@ def single_contact(request, pk):
                 'hash': email_hash,
                 'addresses': addresses,
                 'phones': phones,
-                'vcard_str': None,
-                #'vcard_str': str(VCard(contact)),
+                'vcard_str': str(VCard(contact_card)),
                 'groups': groups,
                 'tags': tags,
                 'events': events,
