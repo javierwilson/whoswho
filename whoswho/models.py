@@ -17,6 +17,13 @@ class AvatarStorage(LazyObject):
 
 avatar_storage = AvatarStorage()
 
+EDUCATION_CHOICES = (
+    ('P', _('Primaria')),
+    ('S', _('Secundaria')),
+    ('U', _('Universitaria')),
+    ('O', _('--')),
+)
+
 SEX_CHOICES = (
     ('M', _('Man')),
     ('F', _('Woman')),
@@ -119,6 +126,37 @@ class Contact(models.Model):
     tags = TaggableManager(blank=True)
     #events = models.ManyToManyField('Event', through='Attendance')
 
+    # new fields to make my life simpler
+    phone_work = models.CharField(max_length=20)
+    phone_personal = models.CharField(max_length=20)
+    email_work = models.EmailField()
+    email_personal = models.EmailField()
+
+    # address
+    street = models.CharField(max_length=50, null=True, blank=True)
+    city = models.CharField(max_length=40)
+    state = models.CharField(max_length=40)
+    municipality = models.CharField(max_length=40)
+    community = models.CharField(max_length=40)
+    country = CountryField()
+    zip = models.CharField(max_length=10, null=True, blank=True)
+
+    # finca
+    area_mz = models.DecimalField(max_digits=6, decimal_places=2, null=True, blank=True)
+    area_productiva_mz = models.DecimalField(max_digits=6, decimal_places=2, null=True, blank=True)
+    area_desarrollo_mz = models.DecimalField(max_digits=6, decimal_places=2, null=True, blank=True)
+
+    # extra
+    women_home = models.IntegerField(null=True)
+    men_home = models.IntgerField(null=True)
+    birth = models.DateField(null=True)
+    education = models.CharField(max_length=1, null=True, blank=True, choices=EDUCATION_CHOICES)
+    document = models.CharField(max_length=40)
+
+    def __unicode__(self):
+        return "%s %s: %s" % (self.contact.first_name, self.contact.last_name, self.email)
+
+
     class Meta:
         ordering = ['first_name', 'last_name']
 
@@ -163,6 +201,7 @@ class AttendeeType(models.Model):
 class Attendance(models.Model):
     contact = models.ForeignKey(Contact, related_name='events')
     event = models.ForeignKey(Event)
+    date = models.DateField()
     type = models.ForeignKey(AttendeeType)
 
     class Meta:
