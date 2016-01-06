@@ -157,13 +157,13 @@ def index(request):
 
     return render(
         request, 'index.html',
-        RequestContext(request, {
+        {
             'totals': totals,
             'contacts': contacts,
             'groups': groups,
             'tags': tags,
             'events': events,
-        }))
+        })
 
 
 def get_hash(str):

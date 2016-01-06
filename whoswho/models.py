@@ -106,15 +106,24 @@ class ContactGroup(models.Model):
     def __unicode__(self):
         return self.name
 
+class Monitor(models.Model):
+    name = models.CharField(max_length=40)
+
+    class Meta:
+        ordering = ['name']
+
+    def __unicode__(self):
+        return self.name
 
 class Contact(models.Model):
     groups = models.ManyToManyField(ContactGroup, blank=True)
-    last_name = models.CharField(max_length=40, blank=False)
-    first_name = models.CharField(max_length=40, blank=False)
+    last_name = models.CharField(max_length=80, blank=False)
+    first_name = models.CharField(max_length=80, blank=False)
     middle_name = models.CharField(max_length=40, blank=True)
     title = models.CharField(max_length=40, blank=True)
     sex = models.CharField(max_length=1, null=True, choices=SEX_CHOICES)
     organization = models.ForeignKey(Organization, null=True, blank=True)
+    #organization_custom = models.CharField(max_length=100, null=True, blank=True)
     profession = models.ForeignKey(Profession, null=True, blank=True)
     url = models.URLField(null=True, blank=True)
     blurb = models.TextField(null=True, blank=True)
@@ -148,9 +157,17 @@ class Contact(models.Model):
     # extra
     women_home = models.IntegerField(null=True, blank=True)
     men_home = models.IntegerField(null=True, blank=True)
-    birth = models.DateField(null=True, blank=True)
+    dob = models.DateField(null=True, blank=True, verbose_name="Date of Birth")
+    age = models.IntegerField(null=True, blank=True, verbose_name="Age")
     education = models.CharField(max_length=1, null=True, blank=True, choices=EDUCATION_CHOICES)
+    education_custom = models.CharField(max_length=100, null=True, blank=True)
     document = models.CharField(max_length=40, null=True, blank=True)
+
+    # control
+    ref = models.IntegerField(null=True, blank=True, verbose_name="Reference")
+    modified = models.DateField(auto_now=True)
+    created = models.DateField(auto_now_add=True)
+    monitor = models.ForeignKey(Monitor, null=True, blank=True)
 
     def __unicode__(self):
         return "%s %s: %s" % (self.contact.first_name, self.contact.last_name, self.email)
