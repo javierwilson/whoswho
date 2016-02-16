@@ -54,6 +54,7 @@ INSTALLED_APPS = (
     #'taggit_labels',
     'taggit_autosuggest',
     'import_export',
+    'model_report',
 
     # my own
     'whoswho',

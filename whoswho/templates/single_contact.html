@@ -33,7 +33,7 @@
 	<p>
 	{% for event in contact.events.all %}
 		{% if forloop.first %}Events:{% endif %}
-		<a href="{% url "single_event" event.name %}">{{ event.name }}</a>,
+		<a href="{% url "single_event" event.pk %}">{{ event.name }}</a>,
 	{% endfor %}
 	</p>
 	<p>

@@ -184,7 +184,7 @@ def single_contact(request, pk):
         'full_name': "%s: %s" % (contact.id, contact.full_name()),
         'phone_number': contact.phone,
         'email': contact.email,
-        'url': reverse('app:detail', kwargs={'username': contact.username}),
+        # FIXME: no username? 'url': reverse('app:detail', kwargs={'username': contact.username}),
         'company': contact.organization,
     }
 
@@ -196,19 +196,19 @@ def single_contact(request, pk):
             email_hash = get_hash(email.email)
 
         # FIXME is email required?
-        addresses = Address.objects.filter(contact=contact)
+        #addresses = Address.objects.filter(contact=contact)
         #if addresses:
         #    address = addresses[0]
-        phones = PhoneNumber.objects.filter(contact=contact)
+        #phones = PhoneNumber.objects.filter(contact=contact)
         return render(
             request, 'single_contact.html',
             RequestContext(request, {
                 'contact': contact,
                 'emails': emails,
                 'hash': email_hash,
-                'addresses': addresses,
-                'phones': phones,
-                'vcard_str': str(VCard(contact_card)),
+                #'addresses': addresses,
+                #'phones': phones,
+                #'vcard_str': str(VCard(contact_card)),
                 'groups': groups,
                 'tags': tags,
                 'events': events,

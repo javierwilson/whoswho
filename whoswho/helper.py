@@ -56,29 +56,29 @@ country=(address.country.name, ) )
     def add_emails(self):
         contact = self.contact
         card = self.card
-        emails = Email.objects.filter(contact=contact)
-        for email in emails:
-            e = card.add('email')
-            e.value = email.email
-            e.type_param = email.type
+        #emails = Email.objects.filter(contact=contact)
+        #for email in emails:
+        #    e = card.add('email')
+        #    e.value = email.email
+        #    e.type_param = email.type
 
     def add_phones(self):
         contact = self.contact
         card = self.card
-        phones = PhoneNumber.objects.filter(contact=contact)
-        for phone in phones:
-            p = card.add('tel')
-            p.value = phone.phone
-            p.type_param = phone.type
+        #phones = PhoneNumber.objects.filter(contact=contact)
+        #for phone in phones:
+        #    p = card.add('tel')
+        #    p.value = phone.phone
+        #    p.type_param = phone.type
 
     def add_websites(self):
         contact = self.contact
         card = self.card
-        websites = Website.objects.filter(contact=contact)
-        for web in websites:
-            w = card.add('url')
-            w.value = web.website
-            w.type_param = web.type
+        #websites = Website.objects.filter(contact=contact)
+        #for web in websites:
+        #    w = card.add('url')
+        #    w.value = web.website
+        #    w.type_param = web.type
 
     def add_socialnetworks(self):
         contact = self.contact

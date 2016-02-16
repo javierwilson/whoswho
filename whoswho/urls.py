@@ -17,6 +17,9 @@ from django.conf.urls import include, url
 from django.contrib import admin
 from .views import *
 
+from model_report import report
+report.autodiscover()
+
 urlpatterns = [
     url(r'^grappelli/', include('grappelli.urls')), # grappelli URLS
     url(r'^taggit_autosuggest/', include('taggit_autosuggest.urls')),
@@ -28,5 +31,7 @@ urlpatterns = [
     url(r'^contact/add$', add_contact, name='add_contact'),
     url(r'^contact/(?P<pk>\d+)/edit$', edit_contact, name='edit_contact'),
     url(r'^contact/(?P<pk>\d+)/view$', single_contact, name='single_contact'),
+    url(r'^event/(?P<pk>\d+)/view$', single_contact, name='single_event'),
     url(r'^contact/download$', download_vcard, name='download_vcard'),
+    url(r'^reports/', include('model_report.urls')),
 ]

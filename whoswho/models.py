@@ -169,20 +169,32 @@ class Contact(models.Model):
     created = models.DateField(auto_now_add=True)
     monitor = models.ForeignKey(Monitor, null=True, blank=True)
 
-    def __unicode__(self):
-        return "%s %s: %s" % (self.contact.first_name, self.contact.last_name, self.email)
-
-
     class Meta:
+        unique_together = (('first_name', 'last_name'),)
         ordering = ['first_name', 'last_name']
+
+    def email(self):
+        if self.email_work:
+            return email_work
+        else:
+            return email_personal
+
+    def phone(self):
+        if self.phone_work:
+            return phone_work
+        else:
+            return phone_personal
+
+    def full_name(self):
+        return "%s %s" % (self.first_name, self.last_name)
+
+    def __unicode__(self):
+        return "%s %s (%s): %s %s" % (self.first_name, self.last_name, self.sex, self.country, self.organization)
 
     def __init__(self, *args, **kwargs):
         super(Contact, self).__init__(*args, **kwargs)
         self.profile_image.storage = avatar_storage
         self.profile_image.thumbnail_storage = avatar_storage
-
-    def __unicode__(self):
-        return "%s %s" % (self.first_name, self.last_name)
 
 
 class Event(models.Model):
@@ -194,12 +206,32 @@ class Event(models.Model):
     start = models.DateTimeField(blank=True, null=True, verbose_name=_('Start'))
     end = models.DateTimeField(blank=True, null=True, verbose_name=_('End'))
     place = models.CharField(max_length=200, null=True, blank=True, verbose_name=_('Place'))
+    monitor = models.BooleanField(default=False)
 
     class Meta:
-        ordering = ['name']
+        ordering = ['start', 'name']
 
     def __unicode__(self):
         return "%s %s" % (self.name, self.start, )
+
+    def _women(self):
+        women = self.attendance_set.filter(contact__sex='F').count()
+        return women
+    _women.short_description = _('Women')
+    _women.integer = True
+    women = property(_women)
+
+    def _men(self):
+        men = self.attendance_set.filter(contact__sex='M').count()
+        return men
+    _men.short_description = _('Men')
+    men = property(_men)
+
+    def _total(self):
+        total = self.attendance_set.all().count()
+        return total
+    _total.short_description = _('Total')
+    total = property(_total)
 
 
 class AttendeeType(models.Model):
@@ -217,8 +249,8 @@ class AttendeeType(models.Model):
 class Attendance(models.Model):
     contact = models.ForeignKey(Contact, related_name='events')
     event = models.ForeignKey(Event)
-    date = models.DateField(null=True)
-    type = models.ForeignKey(AttendeeType)
+    date = models.DateField(null=True, blank=True)
+    type = models.ForeignKey(AttendeeType, null=True, blank=True)
 
     class Meta:
         unique_together = ('contact', 'event')

@@ -10,3 +10,4 @@ django-countries
 django-import-export
 werkzeug
 django
+-e git+git://github.com/javierwilson/django-model-report#egg=django-model-report
