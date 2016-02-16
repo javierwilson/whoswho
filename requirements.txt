@@ -1,3 +1,4 @@
+django<1.9
 django-allauth
 django-crispy-forms-ng
 django-extensions
@@ -9,5 +10,4 @@ easy-thumbnails
 django-countries
 django-import-export
 werkzeug
-django
 -e git+git://github.com/javierwilson/django-model-report#egg=django-model-report
